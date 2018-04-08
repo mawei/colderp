@@ -168,6 +168,7 @@ class Purchase extends Admin_Controller {
 
     function get_options($type,$result_type,$key)
     {
+        $key = urldecode($key);
         $products = $this->Product_model->select(array($type=>$key));
         $result = array();
         foreach ($products as $key => $value) {
