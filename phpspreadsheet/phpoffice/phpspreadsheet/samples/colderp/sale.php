@@ -71,8 +71,8 @@ $spreadsheet->getActiveSheet()->setTitle('销售订单');
 $spreadsheet->setActiveSheetIndex(0);
 
 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($spreadsheet);
-$writer->save('./print/销售单'.$orders[0]->sale_id.".htm");
-$url = '/colderp/phpspreadsheet/phpoffice/phpspreadsheet/samples/colderp/print/销售单'.$orders[0]->sale_id.'.htm';
+$writer->save('./print/sale'.$orders[0]->sale_id.".htm");
+$url = '/colderp/phpspreadsheet/phpoffice/phpspreadsheet/samples/colderp/print/sale'.$orders[0]->sale_id.'.htm';
 header("Location: {$url}");
 die();
 
