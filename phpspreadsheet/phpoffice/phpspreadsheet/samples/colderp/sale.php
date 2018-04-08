@@ -72,7 +72,7 @@ $spreadsheet->setActiveSheetIndex(0);
 
 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($spreadsheet);
 $writer->save('./print/sale'.$orders[0]->sale_id.".htm");
-$url = '/colderp/phpspreadsheet/phpoffice/phpspreadsheet/samples/colderp/print/sale'.$orders[0]->sale_id.'.htm';
+$url = '/phpspreadsheet/phpoffice/phpspreadsheet/samples/colderp/print/sale'.$orders[0]->sale_id.'.htm';
 header("Location: {$url}");
 die();
 
