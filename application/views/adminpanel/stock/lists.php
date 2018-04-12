@@ -22,11 +22,11 @@
               <th   nowrap="nowrap">一箱含支数</th>
               <th   nowrap="nowrap">箱数</th>
               <th   nowrap="nowrap">支数</th>
-              <th   nowrap="nowrap">是否上架</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
+            
           <?php foreach($data_list as $k=>$v):?>
             <tr>
               <td><input type="checkbox" name="pid[]" value="<?php echo $v['stock_id']?>" /></td>
@@ -37,7 +37,6 @@
                             <td><?php echo $v['number_per_package']?></td>
                             <td><?php echo $v['number']?></td>
                             <td><?php echo $v['zhi_number']?></td>
-                            <td><?php echo $v['is_on']?></td>
               <td>
                             	<a href="<?php echo base_url('adminpanel/stock/readonly/'.$v['stock_id'])?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-share-alt"></span> 查看</a>
                                             <a href="<?php echo base_url('adminpanel/stock/edit/'.$v['stock_id'])?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 修改</a>

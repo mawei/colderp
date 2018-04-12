@@ -81,11 +81,8 @@ class Sale extends Admin_Controller {
 			$_arr['customer_id'] = isset($_POST["customer_id"])?trim(safe_replace($_POST["customer_id"])):'';
 			$_arr['address_id'] = isset($_POST["address_id"])?trim(safe_replace($_POST["address_id"])):'';
 			$_arr['status'] = isset($_POST["status"])?trim(safe_replace($_POST["status"])):'';
-			$_arr['time'] = isset($_POST["time"])?trim(safe_replace($_POST["time"])):exit(json_encode(array('status'=>false,'tips'=>'时间必填')));
-			if($_arr['time']=='')exit(json_encode(array('status'=>false,'tips'=>'时间必填')));
-			if($_arr['time']!=''){
-			if(!is_datetime($_arr['time']))exit(json_encode(array('status'=>false,'tips'=>'时间不符合格式要求')));
-			}
+			$_arr['time'] = date('Y-m-d H:i:s');
+
 			
             $new_id = $this->sale_model->insert($_arr);
             if($new_id)
@@ -157,11 +154,7 @@ class Sale extends Admin_Controller {
 			$_arr['customer_id'] = isset($_POST["customer_id"])?trim(safe_replace($_POST["customer_id"])):'';
 			$_arr['address_id'] = isset($_POST["address_id"])?trim(safe_replace($_POST["address_id"])):'';
 			$_arr['status'] = isset($_POST["status"])?trim(safe_replace($_POST["status"])):'';
-			$_arr['time'] = isset($_POST["time"])?trim(safe_replace($_POST["time"])):exit(json_encode(array('status'=>false,'tips'=>'时间必填')));
-			if($_arr['time']=='')exit(json_encode(array('status'=>false,'tips'=>'时间必填')));
-			if($_arr['time']!=''){
-			if(!is_datetime($_arr['time']))exit(json_encode(array('status'=>false,'tips'=>'时间不符合格式要求')));
-			}
+			$_arr['time'] = date('Y-m-d H:i:s');
 			
             $status = $this->sale_model->update($_arr,array('sale_id'=>$id));
             if($status)
@@ -193,9 +186,20 @@ class Sale extends Admin_Controller {
         $_arr['number'] = isset($_POST["number"])?trim(safe_replace($_POST["number"])):'';
         $_arr['product_id'] = isset($_POST["product_id"])?trim(safe_replace($_POST["product_id"])):'';
         $_arr['sale_id'] = isset($_POST["sale_id"])?trim(safe_replace($_POST["sale_id"])):'';
+        $_arr['sale_type'] = isset($_POST["sale_type"])?trim(safe_replace($_POST["sale_type"])):'';
 
         // print($_arr);die();
+
         $new_id = $this->saledetail_model->insert($_arr);
+        if($_arr['sale_type'] == '销售')
+        {
+            $this->db->query("update t_aci_stock set number=number-{$_arr['number']} where order_number={$_arr['stock_id']} and product_id={$_arr['product_id']}");
+        }else if($_arr['sale_type'] == '销售退货'){
+            $this->db->query("update t_aci_stock set number=number+{$_arr['number']} where order_number={$_arr['stock_id']} and product_id={$_arr['product_id']}");
+
+        }
+        
+
         if($new_id)
         {
             exit(json_encode(array('status'=>true,'tips'=>'信息新增成功','new_id'=>$new_id)));

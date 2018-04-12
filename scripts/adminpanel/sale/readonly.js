@@ -13,7 +13,7 @@
 		$("#vendor_id").on("change",function(e) {  
 	        var vendor_id = $("#vendor_id").val();  
 	        $("#brand").empty();  
-	        $("#brand").append('<option value="">请选择</option>');  
+	        // $("#brand").append('<option value="">请选择</option>');  
 	        var url = SITE_URL + "adminpanel/purchase/get_options/vendor_id/brand/" + vendor_id;  
 	        $.ajax({  
 	           url: url,  
@@ -32,6 +32,27 @@
 	                 alert("error");  
 	           }  
 	        });  
+	        $("#series").empty();  
+	        $("#series").append('<option value="">请选择</option>');  
+
+	        var url = SITE_URL + "adminpanel/purchase/get_options/vendor_id/series/" + vendor_id;  
+	        $.ajax({  
+	           url: url,  
+	           type: "get",  
+	           datatype:"json",  
+	           contentType: "application/json; charset=utf-8",   
+	           success : function(data, status){  
+	               if(status == "success"){ 
+	               	   var dataObj = eval("("+data+")");
+	                   $.each(dataObj,function(i,item){  
+	                       $("#series").append(" <option value='" + item + "'>" + item + "</option>");  
+	                   });  
+	               }  
+	           },  
+	            error : function() {    
+	                 alert("error");  
+	           }  
+	        }); 
 	    }); 
 
 		$("#brand").on("change",function(e) {  
@@ -81,6 +102,7 @@
 	           }  
 	        });  
 	    }); 
+
 
 
             $('#validateform').bootstrapValidator({

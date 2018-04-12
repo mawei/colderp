@@ -96,7 +96,10 @@ class Stock extends Admin_Controller {
 			if(!is_number($_arr['zhi_number']))exit(json_encode(array('status'=>false,'tips'=>'支数不符合格式要求')));
 			}
 			$_arr['rebate_percent'] = isset($_POST["rebate_percent"])?trim(safe_replace($_POST["rebate_percent"])):'';
-			$_arr['is_on'] = isset($_POST["is_on"])?trim(safe_replace($_POST["is_on"])):'';
+            $_arr['is_on_big'] = isset($_POST["is_on_big"])?trim(safe_replace($_POST["is_on_big"])):'';
+            $_arr['is_on_small'] = isset($_POST["is_on_small"])?trim(safe_replace($_POST["is_on_small"])):'';
+            $_arr['big_price'] = isset($_POST["big_price"])?trim(safe_replace($_POST["big_price"])):'';
+            $_arr['small_price'] = isset($_POST["small_price"])?trim(safe_replace($_POST["small_price"])):'';
 			
             $new_id = $this->stock_model->insert($_arr);
             if($new_id)
@@ -183,7 +186,10 @@ class Stock extends Admin_Controller {
 			if(!is_number($_arr['zhi_number']))exit(json_encode(array('status'=>false,'tips'=>'支数不符合格式要求')));
 			}
 			$_arr['rebate_percent'] = isset($_POST["rebate_percent"])?trim(safe_replace($_POST["rebate_percent"])):'';
-			$_arr['is_on'] = isset($_POST["is_on"])?trim(safe_replace($_POST["is_on"])):'';
+            $_arr['is_on_big'] = isset($_POST["is_on_big"])?trim(safe_replace($_POST["is_on_big"])):'';
+            $_arr['is_on_small'] = isset($_POST["is_on_small"])?trim(safe_replace($_POST["is_on_small"])):'';
+            $_arr['big_price'] = isset($_POST["big_price"])?trim(safe_replace($_POST["big_price"])):'';
+            $_arr['small_price'] = isset($_POST["small_price"])?trim(safe_replace($_POST["small_price"])):'';
 			
             $status = $this->stock_model->update($_arr,array('stock_id'=>$id));
             if($status)

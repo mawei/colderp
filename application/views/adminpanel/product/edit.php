@@ -20,26 +20,34 @@
 
 					</div>
 				</div>				
-				<div class="form-group">
-					<label for="category" class="col-sm-2 control-label form-control-static">大类</label>
-					<div class="col-sm-9 ">
-						<input type="text" name="category"  id="category"  value='<?php echo isset($data_info['category'])?$data_info['category']:'' ?>'  class="form-control validate[required]"  placeholder="请输入大类" >
-					</div>
-				</div>
+
 
 				<div class="form-group">
 					<label for="brand" class="col-sm-2 control-label form-control-static">品牌</label>
 					<div class="col-sm-9 ">
-						<input type="text" name="brand"  id="brand"  value='<?php echo isset($data_info['brand'])?$data_info['brand']:'' ?>'  class="form-control validate[required]"  placeholder="请输入品牌" >
+						<input type="text" name="brand"  id="brand"  value='<?php echo isset($data_info['brand']) && $data_info['brand']!=''?$data_info['brand']:$vendor['brand'] ?>'  class="form-control validate[required]"  placeholder="请输入品牌" >
 					</div>
 				</div>
 
+				<div class="form-group">
+					<label for="category" class="col-sm-2 control-label form-control-static">大类</label>
+					<div class="col-sm-9 ">
+<!-- 						<input type="text" name="category"  id="category"  value='<?php echo isset($data_info['category'])?$data_info['category']:'' ?>'  class="form-control validate[required]"  placeholder="请输入大类" > -->
+						<select class="form-control "  name="category"  id="category">
+							<option value="">请选择大类</option>
+							<option value="冷饮" <?php if(isset($data_info['category'])&&($data_info['category']=='冷饮')) { ?> selected="selected" <?php } ?>>冷饮</option>
+							<option value="速冻" <?php if(isset($data_info['category'])&&($data_info['category']=='速冻')) { ?> selected="selected" <?php } ?>>速冻</option>
+						</select>
+					</div>
+				</div>
 
 
 				<div class="form-group">
 					<label for="series" class="col-sm-2 control-label form-control-static">产品系列</label>
 					<div class="col-sm-9 ">
-						<input type="text" name="series"  id="series"  value='<?php echo isset($data_info['series'])?$data_info['series']:'' ?>'  class="form-control validate[required]"  placeholder="请输入产品系列" >
+						<select class="form-control "  name="series"  id="series">
+							<option value="<?php echo isset($data_info['series'])?$data_info['series']:'' ?>"><?php echo isset($data_info['series'])?$data_info['series']:'' ?></option>
+						</select>
 					</div>
 				</div>
 
@@ -81,8 +89,12 @@
 			var id =<?php echo $id;?>;
 			var vendor_id =<?php echo $vendor_id;?>;
 
+			
+
 			require(['<?php echo SITE_URL?>scripts/common.js'], function (common) {
 				require(['<?php echo SITE_URL?>scripts/adminpanel/product/edit.js']);
 			});
+
+
 		</script>
 

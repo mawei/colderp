@@ -22,32 +22,51 @@ class Welcome extends Front_Controller {
 	{
 
 		$this->is_login();
-
-		$q['is_on'] = '是';
-		$query = "select t2.*,t1.stock_id,t1.price,t1.number,t1.zhi_number,t1.number_per_package from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id where t1.is_on = '是'";
-		if($brand != ''){
-			$query .= " and brand='{$brand}'";
-		}
-		if($series != ''){
-			$query .= " and series='{$series}'";
-		}
-		$data = $this->db->query($query)->result_array();
-		// $data = $this->stock_model->select($q);
-		$all_brand = $this->db->query("select distinct t2.brand from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id  where t1.is_on = '是' group by t2.brand")->result_array();
-		$all_series = $this->db->query("select distinct t2.series from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id  where t1.is_on = '是' and brand='{$brand}' group by t2.series")->result_array();
-		$cart = $this->session->userdata('cart');
-		if($cart == null)
-		{
-			$cart = array();
-		}
-		// print_r($cart);
 		if($this->customer['customer_type'] == '普通客户')
 		{
+			$query = "select t2.*,t1.stock_id,t1.small_price as price,t1.number,t1.zhi_number,t1.number_per_package from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id where t1.is_on_small = '是'";
+			if($brand != ''){
+				$query .= " and brand='{$brand}'";
+			}
+			if($series != ''){
+				$query .= " and series='{$series}'";
+			}
+			$data = $this->db->query($query)->result_array();
+			// $data = $this->stock_model->select($q);
+			$all_brand = $this->db->query("select distinct t2.brand from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id  where t1.is_on_small = '是' group by t2.brand")->result_array();
+			$all_series = $this->db->query("select distinct t2.series from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id  where t1.is_on_small = '是' and brand='{$brand}' group by t2.series")->result_array();
+			$cart = $this->session->userdata('cart');
+			if($cart == null)
+			{
+				$cart = array();
+			}
+			foreach ($data as $key => $value) {
+				$data[$key]['number'] = $data[$key]['number']*$data[$key]['number_per_package'] + $data[$key]['zhi_number'];
+				$data[$key]['unit'] = "支";
+			}
+		}else{
+			$query = "select t2.*,t1.stock_id,t1.big_price as price,t1.number,t1.zhi_number,t1.number_per_package from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id where t1.is_on_big= '是'";
+			if($brand != ''){
+				$query .= " and brand='{$brand}'";
+			}
+			if($series != ''){
+				$query .= " and series='{$series}'";
+			}
+			$data = $this->db->query($query)->result_array();
+			// $data = $this->stock_model->select($q);
+			$all_brand = $this->db->query("select distinct t2.brand from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id  where t1.is_on = '是' group by t2.brand")->result_array();
+			$all_series = $this->db->query("select distinct t2.series from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id  where t1.is_on = '是' and brand='{$brand}' group by t2.series")->result_array();
+			$cart = $this->session->userdata('cart');
+			if($cart == null)
+			{
+				$cart = array();
+			}
 			foreach ($data as $key => $value) {
 				$data[$key]['number'] = $data[$key]['number']*$data[$key]['number_per_package'] + $data[$key]['zhi_number'];
 				$data[$key]['unit'] = "支";
 			}
 		}
+
 
 		$this->view('index',array('data'=>$data,'cart'=>$cart,'all_brand'=>$all_brand,'all_series'=>$all_series,'brand'=>$brand,'series'=>$series));
 	}

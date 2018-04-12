@@ -11,6 +11,7 @@
 		$("#dialog" ).dialog();$("#dialog" ).dialog("close");
 	}
 
+
 	define(function (require) {
 	var $ = require('jquery');
 	var aci = require('aci');
@@ -22,6 +23,26 @@
 	require('datetimepicker');
 
 		$(function () {
+
+
+		$("#category").on("change",function(e) {  
+			$("#series").empty();
+	        if($("#category").val()=='冷饮'){
+	        	$("#series").append('<option value="杯装">杯装</option>');   
+	        	$("#series").append('<option value="盒装">盒装</option>');   
+	        	$("#series").append('<option value="棒装">棒装</option>');   
+	        	$("#series").append('<option value="甜筒">甜筒</option>');   
+	        	$("#series").append('<option value="组合装">组合装</option>');   
+	        }
+	        if($("#category").val() == '速冻'){
+	        	$("#series").append('<option value="面点">面点</option>');   
+	        	$("#series").append('<option value="水饺">水饺</option>');   
+	        	$("#series").append('<option value="汤圆">汤圆</option>');   
+	        	$("#series").append('<option value="火锅料">火锅料</option>');   
+	        	$("#series").append('<option value="肉类">肉类</option>');   
+	        	$("#series").append('<option value="其他">其他</option>');   
+	        }
+	    }); 
 
 
 		$("#image_a").click(function(){

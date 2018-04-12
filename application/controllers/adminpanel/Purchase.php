@@ -80,7 +80,14 @@ class Purchase extends Admin_Controller {
 					$data_list[$k] = $this->_process_datacorce_value($v);
             	}
         }
-    	$this->view('lists',array('require_js'=>true,'data_info'=>$_arr,'order'=>$order,'dir'=>$dir,'data_list'=>$data_list,'pages'=>$this->purchase_model->pages));
+
+        $vendors = $this->vendor_model->select();
+        $vendor_id = $this->session->userdata('vendor_id');
+        $stock_id = $this->session->userdata('stock_id');
+
+        // $this->view('edit',array('require_js'=>true,'is_edit'=>false,'vendors'=>$vendors,'id'=>0,'stock_id'=>$stock_id,'products'=>$products));
+
+    	$this->view('lists',array('require_js'=>true,'data_info'=>$_arr,'vendor_id'=>$vendor_id,'vendors'=>$vendors,'order'=>$order,'dir'=>$dir,'data_list'=>$data_list,'stock_id'=>$stock_id,'pages'=>$this->purchase_model->pages));
     }
     
     /**
@@ -115,7 +122,6 @@ class Purchase extends Admin_Controller {
             $_arr['product_id'] = isset($_POST["product_id"])?trim(safe_replace($_POST["product_id"])):'';
             $_arr['vendor_id'] = isset($_POST["vendor_id"])?trim(safe_replace($_POST["vendor_id"])):'';
 			$_arr['stock_id'] = isset($_POST["stock_id"])?trim(safe_replace($_POST["stock_id"])):'';
-            $this->session->set_userdata('stock_id',$_arr['stock_id']);
 
             $_arr['price'] = isset($_POST["price"])?trim(safe_replace($_POST["price"])):'';
             $_arr['number_per_package'] = isset($_POST["number_per_package"])?trim(safe_replace($_POST["number_per_package"])):'';
@@ -144,14 +150,24 @@ class Purchase extends Admin_Controller {
             $stock['unit'] = $_arr['unit'];
             $stock['rebate_percent'] = $_arr['rebate_percent'];
             $stock['zhi_number'] = 0;
-            $stock['is_on'] = '否';
+            $stock['is_on_big'] = '否';
+            $stock['is_on_small'] = '否';
+            $stock['big_price'] = 0;
+            $stock['small_price'] = 0;
 
             $this->stock_model->insert($stock);
+
+
+
+
             $amount = $_arr['price']*$_arr['number'];
             $this->db->query("update t_aci_vendor set amount=amount-{$amount} where vendor_id={$_arr['vendor_id']}");
 
             if($new_id)
             {
+                $this->session->set_userdata('stock_id',$_arr['stock_id']);
+                $this->session->set_userdata('vendor_id',$_arr['vendor_id']);
+
 				exit(json_encode(array('status'=>true,'tips'=>'信息新增成功','new_id'=>$new_id)));
             }else
             {
@@ -272,6 +288,7 @@ class Purchase extends Admin_Controller {
         	if(!$data_info)$this->showmessage('信息不存在');
             $data_info = $this->_process_datacorce_value($data_info,true);
             $stock_id = $this->session->userdata('stock_id');
+
             $vendors = $this->vendor_model->select();
             $products = $this->Product_model->select();
         	$this->view('edit',array('require_js'=>true,'data_info'=>$data_info,'vendors'=>$vendors,'is_edit'=>true,'id'=>$id));

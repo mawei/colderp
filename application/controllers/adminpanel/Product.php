@@ -18,6 +18,8 @@ class Product extends Admin_Controller {
     function __construct()
 	{
 		parent::__construct();
+        $this->load->library('session');
+
         $this->load->model(array('vendor_model'));
 		$this->load->model(array('product_model'));
         $this->load->helper(array('auto_codeIgniter_helper','array'));
@@ -101,6 +103,11 @@ class Product extends Admin_Controller {
 			$_arr['image'] = isset($_POST["image"])?trim(safe_replace($_POST["image"])):'';
 			$_arr['code'] = isset($_POST["code"])?trim(safe_replace($_POST["code"])):'';
 			$_arr['model'] = isset($_POST["model"])?trim(safe_replace($_POST["model"])):'';
+
+            $this->session->set_userdata('category',$_arr['category']);
+            $this->session->set_userdata('brand',$_arr['brand']);
+            $this->session->set_userdata('series',$_arr['series']);
+            $this->session->set_userdata('vendor_id',$_arr['vendor_id']);
 			
             $new_id = $this->product_model->insert($_arr);
             if($new_id)
@@ -112,8 +119,16 @@ class Product extends Admin_Controller {
             }
         }else
         {
+
+            $data_info['category'] = $this->session->userdata('category');
+            $data_info['brand'] = $this->session->userdata('brand');
+            $data_info['series'] = $this->session->userdata('series');
+            $data_info['vendor_id'] = $this->session->userdata('vendor_id');
+            $vendor =$this->vendor_model->get_one(array('vendor_id'=>$data_info['vendor_id']));
+            // print_r($data_info);die();
+
             $vendor =$this->vendor_model->get_one(array('vendor_id'=>$vendor_id));
-        	$this->view('edit',array('require_js'=>true,'is_edit'=>false,'vendor'=>$vendor,'vendor_id'=>$vendor_id,'id'=>0,'data_info'=>$this->product_model->default_info()));
+        	$this->view('edit',array('require_js'=>true,'is_edit'=>false,'vendor'=>$vendor,'vendor_id'=>$vendor_id,'id'=>0,'data_info'=>$data_info));
         }
     }
      /**
@@ -167,6 +182,8 @@ class Product extends Admin_Controller {
         $data_info =$this->product_model->get_one(array('product_id'=>$id));
         $vendor =$this->vendor_model->get_one(array('vendor_id'=>$data_info['vendor_id']));
         $vendor_id = $vendor['vendor_id'];
+
+
     	//如果是AJAX请求
     	if($this->input->is_ajax_request())
 		{
@@ -181,7 +198,9 @@ class Product extends Admin_Controller {
 			$_arr['image'] = isset($_POST["image"])?trim(safe_replace($_POST["image"])):'';
 			$_arr['code'] = isset($_POST["code"])?trim(safe_replace($_POST["code"])):'';
 			$_arr['model'] = isset($_POST["model"])?trim(safe_replace($_POST["model"])):'';
-			
+
+
+
             $status = $this->product_model->update($_arr,array('product_id'=>$id));
             if($status)
             {

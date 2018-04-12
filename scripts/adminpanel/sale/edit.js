@@ -65,7 +65,7 @@
 						if(dataObj.status)
 						{
 							$.scojs_message('操作成功,3秒后将返回列表页...', $.scojs_message.TYPE_OK);
-							aci.GoUrl(SITE_URL+'adminpanel/sale/',1);
+							aci.GoUrl(SITE_URL+'adminpanel/sale/readonly/'+dataObj.new_id,1);
 						}else
 						{
 							$.scojs_message(dataObj.tips, $.scojs_message.TYPE_ERROR);

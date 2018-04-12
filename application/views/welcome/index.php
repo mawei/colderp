@@ -42,27 +42,28 @@
             <section class="ect-pro-list flow-pic ect-border-bottom0">
                 <ul>
                     <?php foreach ($data as $key=>$value): ?>
-                    <li class="n-flow1-box">
+                    <li class="n-flow1-box" style="width: 50%;float: left;clear: none">
                         <div class="n-flow-right-sum">
-                            <div class="ect-clear-over">
+                            <div class="ect-clear-over pull-center" style="margin: 0 auto">
                                 <a href="">
-                                    <img src="<?=base_url('images')?>/<?php echo $value['image'];?>" title="<?php echo $value['name'];?>">
+                                    <img src="<?=base_url('images')?>/<?php echo $value['image'];?>" title="<?php echo $value['name'];?>" style="width: 15rem;height:15rem">
                                 </a>
-                                <dl style="margin-left: 9rem">
-                                    <dt>
-                                <h2 class="title">
+                                
+                            </div>
+                            <div>
+                                <dl style="margin-left: 0">
+                                <h3 style="text-align: center;">
                                     <!-- <a href="/app/product/detail?id=224"><?php echo $value['name'];?></a> -->
                                     <?php echo $value['name'];?>
-                                </h2>
-                                    </dt>
-                                    <dd class="ect-color999">
-                                        <p style="line-height: 2.5rem">库存：<?php echo $value['number'];?><?php echo $value['unit'];?></p>
-                                        <p><strong class="ect-colory">￥<?php echo $value['price'];?>元</strong></p>
-                                    </dd>
+                                    <p><span class="ect-colory">￥<?php echo $value['price'];?>元</span><span style="line-height: 2.5rem;font-size: 16px">(库存：<?php echo $value['number'];?><?php echo $value['unit'];?>)</span></span>
+                                    </p>
+                                </h3>
+
+
                                 </dl>
                             </div>
-                            <div class="ect-margin-tb ect-margin-bottom0 ect-clear-over flow-num-del">
-                                <div class="input-group pull-left wrap div-num">
+                            <div class="ect-margin-tb ect-margin-bottom0 ect-clear-over flow-num-del" >
+                                <div class="input-group pull-center wrap div-num" style="margin: 0 auto">
                                     <span class="input-group-addon" onclick="change_goods_number(1,<?php echo $value['stock_id'];?>)">-</span>
                                     <input type="hidden" id="back_number<?php echo $value['stock_id'];?>" value="<?php echo array_key_exists($value['stock_id'],$cart)? $cart[$value['stock_id']] : 0;?>">
                                     <input type="number" class="form-num form-contro" name="number" id="goods_number<?php echo $value['stock_id'];?>" autocomplete="off" value="<?php echo array_key_exists($value['stock_id'],$cart)? $cart[$value['stock_id']] : 0;?>" onchange="change_goods_number(2,<?php echo $value['stock_id'];?>)">

@@ -5,6 +5,10 @@
 	    require('bootstrapValidator');
 
 		$(function () {
+
+
+
+
 			$("#reverseBtn").click(function(){
 				aci.ReverseChecked('pid[]')
 			});
@@ -29,6 +33,8 @@
 					window.location.href= SITE_URL+ "adminpanel/sale/delete_one/"+v;
 				}
 			});
+
+			 
             
 		$(".datetimepicker").datetimepicker({lang:'ch'});
 		$(".datetimepicker").datepicker();

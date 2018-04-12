@@ -21,31 +21,34 @@
  -->         <div class='badge'><?php echo count($saledetails)?></div>
        </div>
      </div>
+     
 <form class="form-horizontal" role="form" id="validateform" name="validateform" action="<?php echo base_url('adminpanel/sale/adddetail')?>" >
       <div class='panel-body '>
 
         <table class="table table-hover dataTable" id="checkAll">
           <thead>
             <tr>
-              <th nowrap="nowrap">销售订单id</th>
-              <th nowrap="nowrap">供应商</th>
-              <th nowrap="nowrap">品牌</th>
-              <th nowrap="nowrap">系列</th>
-              <th nowrap="nowrap">产品</th>
-              <th nowrap="nowrap">数量</th>
-              <th   nowrap="nowrap">单位</th>
-              <th   nowrap="nowrap">价格</th>
-              <th   nowrap="nowrap">入库单号</th>
-              <th>操作</th>
+              <!-- <th nowrap="nowrap">销售订单id</th> -->
+              <th width="14%" nowrap="nowrap">供应商</th>
+              <th width="14%" nowrap="nowrap">品牌</th>
+              <th width="14%" nowrap="nowrap">系列</th>
+              <th width="14%" nowrap="nowrap">产品</th>
+              <th width="8%" nowrap="nowrap">数量</th>
+              <th width="8%" nowrap="nowrap">价格</th>
+              <th width="5%" nowrap="nowrap">单位</th>
+              <th width="8%" nowrap="nowrap">入库单号</th>
+              <th width="8%" nowrap="nowrap">类型</th>
+              <th width="8%">操作</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <form class="form-horizontal" role="form" id="" name="" method="post" action="<?php echo base_url('adminpanel/sale/adddetail')?>" >
 
-              <td><input type="text" name="sale_id"  value="<?php echo $data_info['sale_id']?>" /></td>
+              <input type="hidden" name="sale_id"  value="<?php echo $data_info['sale_id']?>" />
               <td>
                 <select class="form-control "  name="vendor_id"  id="vendor_id">
+                  <option value="">==请选择==</option>
                   <?php if($vendors)foreach($vendors as $vendor):?>
                 <option value='<?php echo $vendor['vendor_id'];?>' <?php if(isset($data_info['vendor_id'])&&($data_info['vendor_id']==$vendor['val'])) { ?> selected="selected" <?php } ?>            ><?php echo $vendor['name'];?></option>
                 <?php endforeach;?>
@@ -66,10 +69,17 @@
                   <option value="">==请选择==</option>
                 </select>
               </td>
-              <td><input type="text" name="number" value="0" /></td>
-              <td><input type="text" name="unit" value="箱" /></td>
-              <td><input type="text" name="price" value="" /></td>
-              <td><input type="text" name="stock_id" value="" /></td>
+              <td><input type="text" name="number" value="0" style="width: 80%"/></td>
+              <td><input type="text" name="price" value="" style="width: 80%"/></td>
+              <td><input type="text" name="unit" value="箱" style="width: 80%"/></td>
+              
+              <td><input type="text" name="stock_id" value="" style="width: 80%"/></td>
+              <td>
+                <select class="form-control "  name="sale_type"  id="sale_type">
+                  <option value="销售">销售</option>
+                  <option value="销售退货">销售退货</option>
+                </select>
+              </td>
               <td> 
                 <input type="submit" name="" value="保存" />
               </td>
@@ -77,15 +87,17 @@
             </tr>
             <?php foreach($saledetails as $k=>$v):?>
               <tr>
-                <td><?php echo $v['sale_id']?></td>
+                <!-- <td><?php echo $v['sale_id']?></td> -->
                 <td><?php echo $v['vendor_name']?></td>
                 <td><?php echo $v['brand']?></td>
                 <td><?php echo $v['series']?></td>
                 <td><?php echo $v['product_name']?></td>
                 <td><?php echo $v['number']?></td>
-                <td><?php echo $v['unit']?></td>
                 <td><?php echo $v['price']?></td>
+                <td><?php echo $v['unit']?></td>
+                
                 <td><?php echo $v['stock_id']?></td>
+                <td><?php echo $v['sale_type']?></td>
                 <td>
                 <a href="<?php echo base_url('adminpanel/saledetail/edit/'.$v['saledetail_id'])?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span> 修改</a>
               </td>
