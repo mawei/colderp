@@ -260,7 +260,7 @@ class Welcome extends Front_Controller {
 		// $this->view('order',array('order'=>$order));
 		// print_r($q['order_id']);
 
-		redirect('phpspreadsheet/phpoffice/phpspreadsheet/samples/colderp/sale.php?order='.json_encode($order));
+		redirect('/phpspreadsheet/phpoffice/phpspreadsheet/samples/colderp/sale.php?order='.json_encode($order));
 		// print_r($result);
 	}
 
