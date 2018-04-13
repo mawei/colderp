@@ -10,11 +10,56 @@
 	require('datetimepicker');
 
 		$(function () {
-		$("#vendor_id").on("change",function(e) {  
-	        var vendor_id = $("#vendor_id").val();  
-	        $("#brand").empty();  
-	        // $("#brand").append('<option value="">请选择</option>');  
-	        var url = SITE_URL + "adminpanel/purchase/get_options/vendor_id/brand/" + vendor_id;  
+		// $("#vendor_id").on("change",function(e) {  
+	 //        var vendor_id = $("#vendor_id").val();  
+	 //        $("#brand").empty();  
+	 //        // $("#brand").append('<option value="">请选择</option>');  
+	 //        var url = SITE_URL + "adminpanel/purchase/get_options/vendor_id/brand/" + vendor_id;  
+	 //        $.ajax({  
+	 //           url: url,  
+	 //           type: "get",  
+	 //           datatype:"json",  
+	 //           contentType: "application/json; charset=utf-8",   
+	 //           success : function(data, status){  
+	 //               if(status == "success"){ 
+	 //               	   var dataObj = eval("("+data+")");
+	 //                   $.each(dataObj,function(i,item){  
+	 //                       $("#brand").append(" <option value='" + item + "'>" + item + "</option>");  
+	 //                   });  
+	 //               }  
+	 //           },  
+	 //            error : function() {    
+	 //                 alert("error");  
+	 //           }  
+	 //        });  
+	 //        $("#series").empty();  
+	 //        $("#series").append('<option value="">请选择</option>');  
+
+	 //        var url = SITE_URL + "adminpanel/purchase/get_options/vendor_id/series/" + vendor_id;  
+	 //        $.ajax({  
+	 //           url: url,  
+	 //           type: "get",  
+	 //           datatype:"json",  
+	 //           contentType: "application/json; charset=utf-8",   
+	 //           success : function(data, status){  
+	 //               if(status == "success"){ 
+	 //               	   var dataObj = eval("("+data+")");
+	 //                   $.each(dataObj,function(i,item){  
+	 //                       $("#series").append(" <option value='" + item + "'>" + item + "</option>");  
+	 //                   });  
+	 //               }  
+	 //           },  
+	 //            error : function() {    
+	 //                 alert("error");  
+	 //           }  
+	 //        }); 
+	 //    }); 
+
+		$("#brand").on("change",function(e) {  
+	        var brand = $("#brand").val();  
+	        $("#category").empty();  
+	        $("#category").append('<option value="">请选择</option>');  
+	        var url = SITE_URL + "adminpanel/purchase/get_options/brand/category/" + brand;  
 	        $.ajax({  
 	           url: url,  
 	           type: "get",  
@@ -24,7 +69,7 @@
 	               if(status == "success"){ 
 	               	   var dataObj = eval("("+data+")");
 	                   $.each(dataObj,function(i,item){  
-	                       $("#brand").append(" <option value='" + item + "'>" + item + "</option>");  
+	                       $("#category").append(" <option value='" + item + "'>" + item + "</option>");  
 	                   });  
 	               }  
 	           },  
@@ -32,34 +77,13 @@
 	                 alert("error");  
 	           }  
 	        });  
-	        $("#series").empty();  
-	        $("#series").append('<option value="">请选择</option>');  
-
-	        var url = SITE_URL + "adminpanel/purchase/get_options/vendor_id/series/" + vendor_id;  
-	        $.ajax({  
-	           url: url,  
-	           type: "get",  
-	           datatype:"json",  
-	           contentType: "application/json; charset=utf-8",   
-	           success : function(data, status){  
-	               if(status == "success"){ 
-	               	   var dataObj = eval("("+data+")");
-	                   $.each(dataObj,function(i,item){  
-	                       $("#series").append(" <option value='" + item + "'>" + item + "</option>");  
-	                   });  
-	               }  
-	           },  
-	            error : function() {    
-	                 alert("error");  
-	           }  
-	        }); 
 	    }); 
 
-		$("#brand").on("change",function(e) {  
-	        var brand = $("#brand").val();  
+		$("#category").on("change",function(e) {  
+	        var category = $("#category").val();  
 	        $("#series").empty();  
 	        $("#series").append('<option value="">请选择</option>');  
-	        var url = SITE_URL + "adminpanel/purchase/get_options/brand/series/" + brand;  
+	        var url = SITE_URL + "adminpanel/purchase/get_options/category/series/" + category;  
 	        $.ajax({  
 	           url: url,  
 	           type: "get",  
@@ -103,7 +127,49 @@
 	        });  
 	    }); 
 
+		$("#product_id").on("change",function(e) {  
+	        var product_id = $("#product_id").val();  
+	        var customer_id = $("#customer_id").val();  
+	        $("#stock_id").empty();  
+	        $("#stock_id").append('<option value="">请选择</option>');  
+	        var url = SITE_URL + "adminpanel/sale/get_stocks/" + product_id;  
+	        $.ajax({  
+	           url: url,  
+	           type: "get",  
+	           datatype:"json",  
+	           contentType: "application/json; charset=utf-8",   
+	           success : function(data, status){  
+	               if(status == "success"){ 
+	               	   var dataObj = eval("("+data+")");
+	                   $.each(dataObj,function(i,item){  
+	                       $("#stock_id").append(" <option value='" + i + "'>" + item + "</option>");  
+	                   });  
+	               }  
+	           },  
+	            error : function() {    
+	                 alert("error");  
+	           }  
+	        });  
+	        $("#price").val(0);  
+	        var url = SITE_URL + "adminpanel/sale/get_saleprice/" + customer_id + '/' + product_id;  
+	        $.ajax({  
+	           url: url,  
+	           type: "get",  
+	           datatype:"text",  
+	           contentType: "application/json; charset=utf-8",   
+	           success : function(data, status){  
+	               if(status == "success"){ 
+	               	   var dataObj = eval("("+data+")");
 
+                       $("#price").val(dataObj);  
+
+	               }  
+	           },  
+	            error : function() {    
+	                 alert("error");  
+	           }  
+	        });  
+	    }); 
 
             $('#validateform').bootstrapValidator({
 				message: '输入框不能为空',

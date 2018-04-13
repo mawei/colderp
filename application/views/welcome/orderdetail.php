@@ -63,7 +63,7 @@
                 </ul>
             </section>
             <div class="flow-jiesuan ect-padding-lr ect-padding-tb" style="background: #f7f7f7;">
-                <?php if($customer['customer_type'] == '普通客户'):?>
+                <?php if($customer['customer_type'] == '个人客户'):?>
                 <a href="<?=base_url('welcome/pay')?>" type="button" class="btn btn-info ect-btn-info ect-bg">立即付款</a>
                 <?php else:?>
                     <a href="" type="button" class="btn btn-info ect-btn-info ect-bg">下单成功</a>

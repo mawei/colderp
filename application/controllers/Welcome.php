@@ -22,7 +22,7 @@ class Welcome extends Front_Controller {
 	{
 
 		$this->is_login();
-		if($this->customer['customer_type'] == '普通客户')
+		if($this->customer['customer_type'] == '个人客户')
 		{
 			$query = "select t2.*,t1.stock_id,t1.small_price as price,t1.number,t1.zhi_number,t1.number_per_package from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id where t1.is_on_small = '是'";
 			if($brand != ''){
@@ -115,10 +115,51 @@ class Welcome extends Front_Controller {
 		$q['customer_id'] = $this->customer['customer_id'];
 		$q['is_delete'] = 0;
 		$address = $this->address_model->select($q);
-
-
 		$this->view('choose_address',array('address'=>$address));
+
+
 	}
+
+	function choose_customer(){
+		$this->is_login();
+		$customers = $this->customer_model->select(array('business_man'=> $this->customer['telephone']));
+		$this->view('choose_customer',array('customers'=>$customers));
+	}
+
+
+	function select_customer()
+	{
+		$this->is_login();
+		$customer_id = $this->input->get("customer_id");
+
+		$cart = $this->session->userdata('cart');
+		// $data['order_id'] = date('YmdHis').rand(100,999);
+		$data['customer_id'] = $customer_id;
+		$data['time'] = date('Y-m-d H:i:s');
+		// $data['address_id'] = $address_id;
+		$sale_id = $this->sale_model->insert($data);
+
+		if($cart != null)
+		{
+			$this->session->set_userdata('sale_id',$sale_id);
+
+			foreach ($cart as $stock_id => $number) {
+				if($number > 0){
+					$data2['stock_id'] = $stock_id;
+					$data2['number'] = $number;
+					$data2['price'] = $this->stock_model->select(array('stock_id'=>$stock_id))[0]['price'];
+					$data2['sale_id'] = $sale_id;
+					$data2['unit'] = '箱';
+					$this->saledetail_model->insert($data2);
+					$this->reduce_stock($stock_id,$number);
+				}
+			}
+		}
+		$this->session->unset_userdata('cart');
+		redirect("welcome/orderdetail?sale_id=".$this->session->userdata('sale_id'));
+	}
+
+
 
 	function select_address()
 	{
@@ -142,10 +183,10 @@ class Welcome extends Front_Controller {
 					$data2['number'] = $number;
 					$data2['price'] = $this->stock_model->select(array('order_number'=>$data['stock_id']))[0]['price'];
 					$data2['sale_id'] = $sale_id;
-					$data2['unit'] = $this->customer['customer_type'] == '普通客户' ? '支':'箱';
+					$data2['unit'] = $this->customer['customer_type'] == '个人客户' ? '支':'箱';
 					$this->saledetail_model->insert($data2);
 			
-					if($this->customer['customer_type'] == '普通客户')
+					if($this->customer['customer_type'] == '个人客户')
 					{
 						$this->reduce_stock_by_small($stock_id,$number);
 					}else{
@@ -195,6 +236,7 @@ class Welcome extends Front_Controller {
 		// $data = $this->db->query("select t2.*,t1.stock_id,t1.price,t1.number,t1.zhi_number,t1.number_per_package from `t_aci_stock` t1 left join `t_aci_product` t2 on t1.product_id=t2.product_id where t1.is_on = '是'")->result_array();
 		// $data = $this->stock_model->select($q);
 		$cart = $this->session->userdata('cart');
+		$cart2 = array();
 		if($cart == null)
 		{
 			$cart = array();
@@ -210,10 +252,10 @@ class Welcome extends Front_Controller {
 					$data2['name'] = $product['name'];
 
 					// $data2['product_id'] = $product_id;
-					$data2['unit'] = $this->customer['customer_type'] == '普通客户' ? '支':'箱';
+					$data2['unit'] = $this->customer['customer_type'] == '个人客户' ? '支':'箱';
 					// $this->saledetail_model->insert($data2);
 			
-					if($this->customer['customer_type'] == '普通客户')
+					if($this->customer['customer_type'] == '个人客户')
 					{
 						$this->reduce_stock_by_small($stock_id,$number);
 					}else{
@@ -225,7 +267,7 @@ class Welcome extends Front_Controller {
 			}
 		}
 
-		$this->view('cart',array('data'=>$cart2,'cart'=>$cart));
+		$this->view('cart',array('data'=>$cart2,'cart'=>$cart,'customer'=>$this->customer));
 
 	}
 
@@ -239,10 +281,20 @@ class Welcome extends Front_Controller {
 	function order()
 	{
 		$this->is_login();
-		$q['customer_id'] = $this->customer['customer_id'];
-		$order = $this->db->query("select distinct sale_id,time from `t_aci_sale` where customer_id={$q['customer_id']}")->result_array();
-		$data = $this->sale_model->select($q);
-		$this->view('order',array('order'=>$order));
+		if($this->customer['customer_type'] == '业务员')
+		{
+			$q['customer_id'] = $this->customer['customer_id'];
+			$telephone = $this->customer['telephone'];
+
+			$order = $this->db->query("select distinct sale_id,time from `t_aci_sale` where customer_id in (select customer_id from `t_aci_customer` where business_man='{$telephone}')")->result_array();
+			// $data = $this->sale_model->select($q);
+			$this->view('order',array('order'=>$order));
+		}else{
+			$q['customer_id'] = $this->customer['customer_id'];
+			$order = $this->db->query("select distinct sale_id,time from `t_aci_sale` where customer_id={$q['customer_id']}")->result_array();
+			$data = $this->sale_model->select($q);
+			$this->view('order',array('order'=>$order));
+		}
 	}
 
 	function output()
@@ -284,12 +336,26 @@ class Welcome extends Front_Controller {
 	{
 
 		$this->is_login();
-		$q['sale_id'] = $this->input->get("sale_id");
+		if($this->customer['customer_type'] == '业务员')
+		{
+			$q['sale_id'] = $this->input->get("sale_id");
+			$order = $this->db->query("select t3.*,t1.stock_id,t2.price,t1.number,t5.address_id,t5.time,t5.sale_id,t5.customer_id from `t_aci_sale` t5 left join t_aci_saledetail t1 on t1.sale_id=t5.sale_id left join  `t_aci_stock` t2 on t1.stock_id=t2.stock_id left join  `t_aci_product` t3 on t2.product_id=t3.product_id where t5.sale_id={$q['sale_id']}")->result_array();
+			$address['name'] = $this->customer_model->get_one(array('customer_id'=>$order[0]['customer_id']))['name'];
+			$address['telephone'] = '';
+			$address['detail'] = '';
+			$address['address'] = '';
+			$customer_id = $this->customer_model->get_one(array('customer_id'=>$order[0]['customer_id']));
 
-		$q['customer_id'] = $this->customer['customer_id'];
-		$order = $this->db->query("select t3.*,t1.stock_id,t2.price,t1.number,t5.address_id,t5.time,t5.sale_id from `t_aci_sale` t5 left join t_aci_saledetail t1 on t1.sale_id=t5.sale_id left join  `t_aci_stock` t2 on t1.stock_id=t2.stock_id left join  `t_aci_product` t3 on t2.product_id=t3.product_id where t5.sale_id={$q['sale_id']} and t5.customer_id={$q['customer_id']}")->result_array();
-		$address = $this->address_model->select(array('address_id'=>$order[0]['address_id']))[0];
-		$this->view('orderdetail',array('order'=>$order,'customer'=>$this->customer,'address'=>$address));
+
+			$this->view('orderdetail',array('order'=>$order,'customer'=>$this->customer,'address'=>$address));
+		}else{
+			$q['sale_id'] = $this->input->get("sale_id");
+			$q['customer_id'] = $this->customer['customer_id'];
+			$order = $this->db->query("select t3.*,t1.stock_id,t2.price,t1.number,t5.address_id,t5.time,t5.sale_id from `t_aci_sale` t5 left join t_aci_saledetail t1 on t1.sale_id=t5.sale_id left join  `t_aci_stock` t2 on t1.stock_id=t2.stock_id left join  `t_aci_product` t3 on t2.product_id=t3.product_id where t5.sale_id={$q['sale_id']} and t5.customer_id={$q['customer_id']}")->result_array();
+			$address = $this->address_model->select(array('address_id'=>$order[0]['address_id']))[0];
+			$this->view('orderdetail',array('order'=>$order,'customer'=>$this->customer,'address'=>$address));
+		}
+		
 	}
 
 
@@ -424,7 +490,7 @@ class Welcome extends Front_Controller {
 			// print_r($data);die();
 			if(count($customer) == 0) {
 				$data['password'] = md5(md5($this->input->post('password')));
-				$data['customer_type'] = '普通客户';
+				$data['customer_type'] = '个人客户';
 				$customer = $this->customer_model->insert($data);
 		        // $this->session->set_userdata('customer_id', insert_id);
 		        echo 'success';

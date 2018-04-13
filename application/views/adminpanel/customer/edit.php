@@ -21,6 +21,7 @@
 								<option value='协议客户' <?php if(isset($data_info['customer_type'])&&($data_info['customer_type']=='协议客户')) { ?> selected="selected" <?php } ?>            >协议客户</option>
 				<option value='普通客户' <?php if(isset($data_info['customer_type'])&&($data_info['customer_type']=='普通客户')) { ?> selected="selected" <?php } ?>            >普通客户</option>
 				<option value='个人客户' <?php if(isset($data_info['customer_type'])&&($data_info['customer_type']=='个人客户')) { ?> selected="selected" <?php } ?>            >个人客户</option>
+				<option value='业务员' <?php if(isset($data_info['customer_type'])&&($data_info['customer_type']=='业务员')) { ?> selected="selected" <?php } ?>            >业务员</option>
 </select>
 				</div>
 			</div>

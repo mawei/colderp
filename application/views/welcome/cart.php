@@ -74,7 +74,13 @@
         });
 
         $("#buybutton").click(function(){
-            window.location.href = "<?=base_url('welcome/choose_address')?>";
+            var customer_type = "<?php echo $customer['customer_type']?>";
+            if(customer_type == '业务员'){
+                window.location.href = "<?=base_url('welcome/choose_customer')?>";
+            }else{
+                window.location.href = "<?=base_url('welcome/choose_address')?>";
+            }
+            
         });
 
         // 输入购物车中商品数量

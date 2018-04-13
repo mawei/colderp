@@ -29,8 +29,9 @@
           <thead>
             <tr>
               <!-- <th nowrap="nowrap">销售订单id</th> -->
-              <th width="14%" nowrap="nowrap">供应商</th>
+              <!-- <th width="14%" nowrap="nowrap">供应商</th> -->
               <th width="14%" nowrap="nowrap">品牌</th>
+              <th width="14%" nowrap="nowrap">大类</th>
               <th width="14%" nowrap="nowrap">系列</th>
               <th width="14%" nowrap="nowrap">产品</th>
               <th width="8%" nowrap="nowrap">数量</th>
@@ -46,16 +47,25 @@
               <form class="form-horizontal" role="form" id="" name="" method="post" action="<?php echo base_url('adminpanel/sale/adddetail')?>" >
 
               <input type="hidden" name="sale_id"  value="<?php echo $data_info['sale_id']?>" />
-              <td>
+              <input type="hidden" name="customer_id" id ="customer_id"  value="<?php echo $customer_id?>" />
+<!--               <td>
                 <select class="form-control "  name="vendor_id"  id="vendor_id">
                   <option value="">==请选择==</option>
                   <?php if($vendors)foreach($vendors as $vendor):?>
                 <option value='<?php echo $vendor['vendor_id'];?>' <?php if(isset($data_info['vendor_id'])&&($data_info['vendor_id']==$vendor['val'])) { ?> selected="selected" <?php } ?>            ><?php echo $vendor['name'];?></option>
                 <?php endforeach;?>
                 </select>  
-              </td>            
+              </td>  -->           
               <td>
                 <select class="form-control "  name="brand"  id="brand">
+                  <option value="">==请选择==</option>
+                  <?php if($brands)foreach($brands as $brand):?>
+                <option value='<?php echo $brand['brand'];?>' <?php if(isset($data_info['brand'])&&($data_info['brand']==$brand['brand'])) { ?> selected="selected" <?php } ?>            ><?php echo $brand['brand'];?></option>
+                <?php endforeach;?>
+                </select>  
+              </td>
+              <td>
+                <select class="form-control "  name="category"  id="category">
                   <option value="">==请选择==</option>
                 </select>
               </td>
@@ -70,10 +80,14 @@
                 </select>
               </td>
               <td><input type="text" name="number" value="0" style="width: 80%"/></td>
-              <td><input type="text" name="price" value="" style="width: 80%"/></td>
+              <td><input type="text" name="price" id="price" value="" style="width: 80%"/></td>
               <td><input type="text" name="unit" value="箱" style="width: 80%"/></td>
               
-              <td><input type="text" name="stock_id" value="" style="width: 80%"/></td>
+              <td>
+                <select class="form-control "  name="stock_id"  id="stock_id">
+                  <option value="">==请选择==</option>
+                </select>
+              </td>
               <td>
                 <select class="form-control "  name="sale_type"  id="sale_type">
                   <option value="销售">销售</option>
@@ -88,8 +102,9 @@
             <?php foreach($saledetails as $k=>$v):?>
               <tr>
                 <!-- <td><?php echo $v['sale_id']?></td> -->
-                <td><?php echo $v['vendor_name']?></td>
+                <!-- <td><?php echo $v['vendor_name']?></td> -->
                 <td><?php echo $v['brand']?></td>
+                <td><?php echo $v['category']?></td>
                 <td><?php echo $v['series']?></td>
                 <td><?php echo $v['product_name']?></td>
                 <td><?php echo $v['number']?></td>

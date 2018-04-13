@@ -18,7 +18,7 @@ class Sale extends Admin_Controller {
     function __construct()
 	{
 		parent::__construct();
-		$this->load->model(array('Customer_model','sale_model','saledetail_model','vendor_model','Product_model'));
+		$this->load->model(array('Customer_model','sale_model','saledetail_model','vendor_model','Product_model','stock_model'));
         $this->load->helper(array('auto_codeIgniter_helper','array'));
   
 	 	$this->method_config['coldcustomer_datasource'] = $this->Customer_model->coldcustomer_datasource();
@@ -198,7 +198,13 @@ class Sale extends Admin_Controller {
             $this->db->query("update t_aci_stock set number=number+{$_arr['number']} where order_number={$_arr['stock_id']} and product_id={$_arr['product_id']}");
 
         }
-        
+
+        $sale = $this->sale_model->get_one(array('sale_id'=>$_arr['sale_id']));
+        $prices = $this->db->query("select * from t_aci_saleprice where customer_id='{$sale['customer_id']}' and product_id='{$_arr['product_id']}' and price='{$_arr['price']}' order by id desc")->result_array();
+        if(count($prices) == 0)
+        {
+            $this->db->query("insert into t_aci_saleprice(`customer_id`,`product_id`,`price`) values ('{$sale['customer_id']}','{$_arr['product_id']}','{$_arr['price']}')");
+        }
 
         if($new_id)
         {
@@ -207,6 +213,31 @@ class Sale extends Admin_Controller {
         {
             exit(json_encode(array('status'=>false,'tips'=>'信息新增失败','new_id'=>0)));
         }
+    }
+
+    function get_stocks($product_id)
+    {
+        $stocks = $this->stock_model->select(array('product_id'=>$product_id));
+        $result = array();
+        foreach ($stocks as $key => $value) {
+            # code...
+            if($value['number'] > 0)
+            {
+               $result[$value['stock_id']] = $value['createtime']; 
+            }
+        }
+        echo json_encode($result);
+    }
+
+    function get_saleprice($customer_id,$product_id)
+    {
+        $prices = $this->db->query("select * from t_aci_saleprice where customer_id='{$customer_id}' and product_id='{$product_id}' order by id desc")->result_array();
+        $price = 0;
+        if(count($prices) > 0)
+        {
+            $price = $prices[0]['price'];
+        }
+        echo $price;
     }
  
   
@@ -220,15 +251,17 @@ class Sale extends Admin_Controller {
     	$id = intval($id);
         $data_info =$this->sale_model->get_one(array('sale_id'=>$id));
         if(!$data_info)$this->showmessage('信息不存在');
+        $customer_id = $data_info['customer_id'];
 		$data_info = $this->_process_datacorce_value($data_info);
         // $saledetails = $this->saledetail_model->select(array('sale_id'=>$data_info['sale_id']));
-        $saledetails = $this->db->query("select t1.*,t2.name as vendor_name,t3.name as product_name from t_aci_saledetail t1 left join t_aci_vendor t2 on t1.vendor_id=t2.vendor_id left join t_aci_product t3 on t1.product_id = t3.product_id where t1.sale_id={$data_info['sale_id']}")->result_array();
+        $saledetails = $this->db->query("select t1.*,t2.name as vendor_name,t3.name as product_name,t3.category from t_aci_saledetail t1 left join t_aci_vendor t2 on t1.vendor_id=t2.vendor_id left join t_aci_product t3 on t1.product_id = t3.product_id where t1.sale_id={$data_info['sale_id']} order by saledetail_id desc")->result_array();
 
         $stock_id = $this->session->userdata('stock_id');
+        $brands = $this->db->query("select distinct brand from t_aci_product")->result_array();
         $vendors = $this->vendor_model->select();
         $products = $this->Product_model->select();
         // $this->view('edit',array('require_js'=>true,'is_edit'=>false,'vendors'=>$vendors,'id'=>0,'stock_id'=>$stock_id,'products'=>$products));
-        $this->view('readonly',array('require_js'=>true,'data_info'=>$data_info,'saledetails'=>$saledetails,'vendors'=>$vendors,'stock_id'=>$stock_id,'products'=>$products,'id'=>$id));
+        $this->view('readonly',array('require_js'=>true,'data_info'=>$data_info,'customer_id'=>$customer_id,'saledetails'=>$saledetails,'brands'=>$brands,'stock_id'=>$stock_id,'products'=>$products,'id'=>$id));
     }
 
 }

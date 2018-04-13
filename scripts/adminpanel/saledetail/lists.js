@@ -29,6 +29,8 @@
 					window.location.href= SITE_URL+ "adminpanel/saledetail/delete_one/"+v;
 				}
 			});
+
+			 
             
             $('#validateform').bootstrapValidator({
 				message: '输入框不能为空',

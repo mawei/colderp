@@ -154,6 +154,7 @@ class Purchase extends Admin_Controller {
             $stock['is_on_small'] = '否';
             $stock['big_price'] = 0;
             $stock['small_price'] = 0;
+            $stock['createtime'] = date('Y-m-d H:i:s');
 
             $this->stock_model->insert($stock);
 

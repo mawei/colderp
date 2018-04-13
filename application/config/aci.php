@@ -1593,6 +1593,22 @@ $config['aci_module'] = array (
         'menu_name' => '上传',
         'caption' => '上传',
       ),
+      9 => 
+      array (
+        'folder' => 'adminpanel',
+        'controller' => 'sale',
+        'method' => 'get_stocks',
+        'menu_name' => '',
+        'caption' => '',
+      ),
+      10 => 
+      array (
+        'folder' => 'adminpanel',
+        'controller' => 'sale',
+        'method' => 'get_saleprice',
+        'menu_name' => '',
+        'caption' => '',
+      ),
     ),
   ),
   'saledetail' => 
