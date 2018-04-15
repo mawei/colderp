@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed.'); ?><?php defined('BASEPATH') or exit('No permission resources.'); ?>
-<form class="form-horizontal" role="form" id="validateform" name="validateform" action="<?php echo base_url('adminpanel/sale/edit')?>" >
+<form class="form-horizontal" role="form" id="validateform" name="validateform" action="<?php echo base_url('adminpanel/sale/add')?>" >
 	<div class='panel panel-default '>
 		<div class='panel-heading'>
 			<i class='fa fa-table'></i> 销售 修改信息
