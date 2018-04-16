@@ -83,7 +83,7 @@
                     success:function(data){ 
                         if(data == 'success'){
                             $(this).val('登录成功，正在载入');
-                            window.location.href = "<?=base_url('welcome/user')?>";
+                            window.location.href = "<?=base_url('welcome/index')?>";
                         }else{
                             islogin = false;
                             alert(data);

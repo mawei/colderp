@@ -336,6 +336,11 @@ class Welcome extends Front_Controller {
 	{
 
 		$this->is_login();
+		if(this->input->get("sale_id") == "")
+		{
+			echo "没有该订单，请选择商品后下单";
+			die();
+		}
 		if($this->customer['customer_type'] == '业务员')
 		{
 			$q['sale_id'] = $this->input->get("sale_id");
@@ -345,7 +350,6 @@ class Welcome extends Front_Controller {
 			$address['detail'] = '';
 			$address['address'] = '';
 			$customer_id = $this->customer_model->get_one(array('customer_id'=>$order[0]['customer_id']));
-
 
 			$this->view('orderdetail',array('order'=>$order,'customer'=>$this->customer,'address'=>$address));
 		}else{
